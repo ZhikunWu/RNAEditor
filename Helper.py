@@ -54,9 +54,6 @@ class Parameters():
         self.standCall = str(inputTab.standCallSpinBox.value())
         self.standEmit = str(inputTab.standEmitSpinBox.value())
         self.edgeDistance = str(inputTab.edgeDistanceSpinBox.value())
-        self.intronDistance = str(inputTab.intronDistanceSpinBox.value())
-        self.minPts = str(inputTab.minPtsSpinBox.value())
-        self.eps = str(inputTab.epsSpinBox.value())
         self.paired = inputTab.pairedCheckBox.isChecked()
         self.overwrite = inputTab.overwriteCheckBox.isChecked()
         self.keepTemp = inputTab.keepTempCheckBox.isChecked()
@@ -109,12 +106,6 @@ class Parameters():
                 self.standEmit=str(value)    
             elif id == "edgeDistance":
                 self.edgeDistance=str(value)
-            elif id == "intronDistance":
-                self.intronDistance=str(value)
-            elif id== "minPts":
-                self.minPts=str(value)
-            elif id== "eps":
-                self.eps=str(value)
             elif id == "threads":
                 self.threads=str(value)
             elif id == "keepTemp":
@@ -180,7 +171,6 @@ class Helper():
     def convertPhred64toPhred33(fastqFile,outFile,logFile,textField):
         """
         converts the inputFile to phred33 Quality and writes it into the ourdir
-        :rtype: String to converted FastQ file
         """
         startTime=Helper.getTime()
         Helper.info("[" + startTime.strftime("%c") + "] * * * convert Quality encoding: " + fastqFile[fastqFile.rfind("/")+1:]   + " * * *",logFile,textField)
@@ -200,10 +190,6 @@ class Helper():
                 a=[]
                 for char in line.rstrip():
                     phredQual=ord(char)-64
-                    if phredQual<0: #correct unvalid values
-                        phredQual=0
-                    elif phredQual>40:
-                        phredQual=40
                     phredChar=chr(phredQual+33)
                     a.append(phredChar)
                 outFile.write("".join(a) + "\n")
@@ -219,7 +205,6 @@ class Helper():
         """
         fastqFile=open(inFastqFile,"r")
         lineNumber=0
-
         lines=lines*4
         for line in fastqFile:
             lineNumber+=1
@@ -235,7 +220,7 @@ class Helper():
                 fastqFile.close()
                 return True
             
-        Helper.error("%s has less than %i Sxequences. \n These are not enough reads for editing detection!!" % (fastqFile.name,lines),logFile, runNumber)
+        Helper.error("%s has less than %i Sequences. \n These are not enough reads for editing detection!!" % (fastqFile.name,lines),logFile, runNumber)
     
     @staticmethod
     def proceedCommand(description,cmd,infile,outfile,rnaEdit):
@@ -707,13 +692,11 @@ class Helper():
         
         sys.stderr.write("\t" + Helper.prefix + "[DONE] Duration [" + str(duration) + "]"  + Helper.praefix + "\n")
     @staticmethod
-    def newline(quantity=1,
-                 logFile=None,
-                 textField=0):
+    def newline (quantity=1,logFile=None,textField=0):
         if textField!=0:
-            # currentAssay = Helper.runningAssays[runNumber]
+            #currentAssay = Helper.runningAssays[runNumber] 
             textField.append("\n"*quantity)
-        if logFile != None:
+        if logFile!=None:
             logFile.write("\n"*quantity)
             logFile.flush()
         sys.stderr.write("\n"*quantity)

@@ -54,9 +54,10 @@ class Feature:
         #trim comments
         attributes=attributes[:attributes.find("#")].rstrip()
         values = map(lambda x: x.strip(), attributes.split(";")[:-1])
-        
+        values = list(values)
         for info in values:
             info = map( lambda x: x.strip(), info.split(" "))
+            info =list(info)
             name, value=info[0], info[1].replace("\"","")
 
             if name == "gene_id":

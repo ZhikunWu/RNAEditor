@@ -77,10 +77,11 @@ class VariantSet(object):
         
         values = map(lambda x: x.strip(), info.split(";"))
         #[:-1])
-        
+        values = list(values)
         attributes={}
         for info in values:
             info = map( lambda x: x.strip(), info.split("="))
+            info = list(info)
             if len(info)>1:
                 name, value=info[0], info[1]
                 try:
@@ -143,7 +144,7 @@ class VariantSet(object):
             varPosList[v.chromosome].append(v.position)
             
         #make numpy array out of the lists
-        for chromosome in varPosList.keys():
+        for chromosome in list(varPosList.keys()):
             varPosList[chromosome]=np.asarray(varPosList[chromosome])
         return varPosList
     
@@ -173,8 +174,8 @@ class VariantSet(object):
             if os.path.getsize(vcfFile) == 0: #getsize raises OSError if file is not existing
                 raise IOError("%s File is empty" % vcfFile)
             vcfFile = open(vcfFile,"r")
-        elif type(vcfFile) != file:
-            raise TypeError("Invalid type in 'parseVcfFile' (need string or file, %s found)" % type(vcfFile)) 
+        # elif type(vcfFile) != file:
+        #     raise TypeError("Invalid type in 'parseVcfFile' (need string or file, %s found)" % type(vcfFile)) 
             
         variantDict = OrderedDict()
         for v in self.iterator(vcfFile):
@@ -193,8 +194,8 @@ class VariantSet(object):
                 outfile=open(outfile,"w")
             except IOError:
                 Helper.warning("Could not open %s to write Variant" % outfile ,self.logFile,self.textField)
-        if type(outfile) != file:   
-            raise AttributeError("Invalid outfile type in 'printVariantDict' (need string or file, %s found)" % type(outfile))
+        # if type(outfile) != file:   
+        #     raise AttributeError("Invalid outfile type in 'printVariantDict' (need string or file, %s found)" % type(outfile))
         
         startTime=Helper.getTime()
         Helper.info("[%s] Print Variants to %s" %  (startTime.strftime("%c"),outfile.name),self.logFile,self.textField)
@@ -202,8 +203,9 @@ class VariantSet(object):
         outfile.write("\t".join(["#CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "\n"]))
         for v in self.variantDict.values():
             attributeString=""
-            for key in v.attributes.keys():
+            for key in list(v.attributes.keys()):
                 if key=="BaseCounts":
+                    #print(v.attributes["BaseCounts"])
                     attributeString+= "BaseCounts=" + ",".join(v.attributes["BaseCounts"]) + ";"
                     continue                
                 elif key =="GI":
@@ -240,7 +242,7 @@ class VariantSet(object):
         valueMatrix=[[]]
         for array in counts.values():
             valueMatrix[0].append(array[value])
-        for gene in counts.keys():
+        for gene in list(counts.keys()):
             barNameTuple+=(gene.names[0],)
 
         if value==0:
@@ -281,8 +283,8 @@ class VariantSet(object):
                 
             except IOError:
                 Helper.warning("Could not open %s to write Variant" % outfile ,self.logFile,self.textField)
-        if type(outfile) != file:   
-            raise AttributeError("Invalid outfile type in 'printVariantDict' (need string or file, %s found)" % type(outfile))
+        # if type(outfile) != file:   
+        #     raise AttributeError("Invalid outfile type in 'printVariantDict' (need string or file, %s found)" % type(outfile))
         
         startTime=Helper.getTime()
         Helper.info("[%s] Print Genes and Variants to %s" %  (startTime.strftime("%c"),outfile.name),self.logFile,self.textField)
@@ -294,6 +296,8 @@ class VariantSet(object):
         
         for v in self.variantDict.values():
             anno = v.attributes["GI"]
+            #print(v.attributes.keys())
+            #print(v.attributes.values())
             for a in anno:
                 gene,segments = a
                 totalReads=str(int(sum(map(int,v.attributes["BaseCounts"]))))
@@ -341,11 +345,13 @@ class VariantSet(object):
             
             sumDictGeneIds=set()
             sumFile.write("\t".join(["#Gene_ID","Name","#3'UTR","#5'UTR","#EXON","INTRON","#TOTAL","\n"]))
-            for gene in sumDict.keys():
+            for gene in list(sumDict.keys()):
                 numbers=map(str,sumDict[gene])
+                numbers = list(numbers)
                 if gene=="-":
                     sumFile.write("\t".join(["intergenic","-"]+["-","-","-","-",numbers[4]]+["\n"]))
                 else:
+                    #print(numbers)
                     sumFile.write("\t".join([gene.geneId,gene.names[0]]+numbers+["\n"]))
                     sumDictGeneIds.add(gene.geneId)        
             #print non effected Genes
@@ -394,8 +400,8 @@ class VariantSet(object):
                 
             except IOError:
                 Helper.warning("Could not open %s to write Variant" % outFile ,self.logFile,self.textField)
-        if type(outFile) != file:   
-            raise AttributeError("Invalid outfile type in 'printVariantDict' (need string or file, %s found)" % type(outFile))
+        # if type(outFile) != file:   
+        #     raise AttributeError("Invalid outfile type in 'printVariantDict' (need string or file, %s found)" % type(outFile))
         
         startTime=Helper.getTime()
         Helper.info("[%s] Print Clusters to %s" %  (startTime.strftime("%c"),outFile.name),self.logFile,self.textField)
@@ -403,7 +409,7 @@ class VariantSet(object):
         
         outFile.write("\t".join(["#Chr","Start","Stop","IslandID","GeneID","Gene Symbol","Cluster Length","Number of Editing_sites","Editing_rate","\n"]))
         
-        for cluster in self.clusterDict.keys():
+        for cluster in list(self.clusterDict.keys()):
             end = max(v.position for v in self.clusterDict[cluster])
             start = min(v.position for v in self.clusterDict[cluster])
             
@@ -425,7 +431,7 @@ class VariantSet(object):
                     geneIdSet.add("N/A") #when variant has no attribute GI
             
             outFile.write("\t".join([v.chromosome,str(start),str(end),"Island"+str(cluster), #Chr","Start","Stop","Cluster Name",
-                                     ",".join(map(str,geneIdSet)),",".join(map(str,geneNameSet)), #"GeneID","Gene Symbol"
+                                     ",".join(list(map(str,geneIdSet))),",".join(list(map(str,geneNameSet))), #"GeneID","Gene Symbol"
                                      str(length),str(len(self.clusterDict[cluster])),'%1.2f'%float(editingRate),"\n"]))
             
     def getVariantTuble(self,line):
@@ -467,8 +473,8 @@ class VariantSet(object):
         #detrmine type of variantB
         if type(variants) == str:
             variantsB = open(variants)
-        elif type(variants) != file:
-            raise TypeError("variantB has wrong type, need str or file, %s found" % type(variantsB))
+        # elif type(variants) != file:
+        #     raise TypeError("variantB has wrong type, need str or file, %s found" % type(variantsB))
         #TODO: variants could also be another object of VariantsSet
         
         #get Start time
@@ -497,8 +503,8 @@ class VariantSet(object):
         
         if type(bedFile) == str:
             bedFile = open(bedFile)
-        elif type(bedFile) != file:
-            raise TypeError("bedFile has wrong type, need str or file, %s found" % type(bedFile))
+        # elif type(bedFile) != file:
+        #     raise TypeError("bedFile has wrong type, need str or file, %s found" % type(bedFile))
         
         startTime=Helper.getTime()
         Helper.info("[%s] Delete overlaps from %s" %  (startTime.strftime("%c"),bedFile.name) ,self.logFile,self.textField)
@@ -538,8 +544,8 @@ class VariantSet(object):
         
         if type(bedFile) == str:
             bedFile = open(bedFile)
-        elif type(bedFile) != file:
-            raise TypeError("bedFile has wrong type, need str or file, %s found" % type(bedFile))
+        # elif type(bedFile) != file:
+        #     raise TypeError("bedFile has wrong type, need str or file, %s found" % type(bedFile))
         
         startTime=Helper.getTime()
         Helper.info("[%s] Split Variants by Bed File %s" %  (startTime.strftime("%c"),bedFile.name) ,self.logFile,self.textField)
@@ -599,7 +605,7 @@ class VariantSet(object):
         '''
         #if type(variantDict) != list:
         #    raise TypeError("variants has wrong type, need variantDict, %s found" % type(variantDict))
-        for key in variantDict.keys():
+        for key in list(variantDict.keys()):
             variantDict[key] = sorted(variantDict[key], key=operator.attrgetter('position'))
 
     def annotateVariantDict(self,genome):
@@ -621,11 +627,9 @@ class VariantSet(object):
     def createClusters(self,eps=50,minSamples=5):
         
         islandCounter=0
-        eps=int(eps)
-        minSamples=int(minSamples)
         variantsByChromosome = self.getVariantListByChromosome()
         self.clusterDict=defaultdict(list)
-        for chr in variantsByChromosome.keys():
+        for chr in list(variantsByChromosome.keys()):
             posList = [v.position for v in variantsByChromosome[chr]] #position of all variants from that chromosome
             
             labels = self.getLabels(posList,eps,minSamples) #actually doing db clustering
@@ -643,7 +647,7 @@ class VariantSet(object):
                     tmpDict[label].append(var)
                     
                 #set new label for clusterdict, to avoid overwriting
-                for label in tmpDict.keys():
+                for label in list(tmpDict.keys()):
                     self.clusterDict[islandCounter]=tmpDict.pop(label)
                     islandCounter+=1
                                     
@@ -680,7 +684,7 @@ class VariantSet(object):
         X = np.asarray(positionList)
         n = X.shape[0] #get number of elements (not sure) 
     
-        index_order=range(n)
+        index_order=list(range(n))
         shuffle(index_order)
         
         
@@ -760,10 +764,11 @@ class VariantSet(object):
         :param lst: vector of samples       
         :return: np.array(diffMatrix)
         '''
+        #print(lst)
         if not isinstance(lst, (list, tuple, np.ndarray)):
             raise TypeError("Paramer has to be eithe a List or a Tuple found %s" % type(lst))
-        if not all(isinstance(item, (int,float)) for item in lst):
-            raise TypeError("List should only contain numbers")
+        # if not any(isinstance(item, (int,float)) for item in lst):
+        #     raise TypeError("List should only contain numbers")
         lst = np.asarray(lst)
         diffMatrix=[]
 
@@ -780,7 +785,7 @@ class VariantSet(object):
         startTime=Helper.getTime()
         Helper.info("Delete non Editing Bases (keep only T->C and A->G)",self.logFile,self.textField)
         
-        for varTuple in self.variantDict.keys():
+        for varTuple in list(self.variantDict.keys()):
             chr,pos,ref,alt = varTuple
             if (ref =="A" and alt == "G") or (ref=="T" and alt=="C"):
                 pass
@@ -799,7 +804,7 @@ class VariantSet(object):
         
         bamFile = Samfile(bamFile, "rb")
         
-        for varKey in self.variantDict.keys():
+        for varKey in list(self.variantDict.keys()):
             variant = self.variantDict[varKey]
             
             counter+=1

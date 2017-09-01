@@ -72,7 +72,7 @@ def topGenes(sumDict, fileName,number=20,value=5, logFile=None,textField=0):
 
         if value==1:
             barName="3'-UTR"
-        elif value  ==2:
+        elif value==2:
             barName="5'-UTR"
         elif value==3:
             barName="Exonic"
@@ -156,14 +156,9 @@ def createDiagramms(output, geneNumber=20,logFile=None,textField=0):
         file=open(stats.outdir+"html/"+stats.sampleName+"_editingSites.txt","w")
         file.write("\t".join(["Position","alu","nonAlu"])+"\n")
         
-        for key in counts1.keys():
-            if key in counts2.keys():
-                file.write("\t".join([str(key),str(counts1[key]),str(counts2[key])])+"\n")
-            else:
-                file.write("\t".join([str(key), str(counts1[key]), "--"]) + "\n")
-        for key in counts2.keys():
-            if key not in counts1.keys():
-                file.write("\t".join([str(key), "--", str(counts2[key])]) + "\n")
+        for keyAlu,keyNonAlu in zip(counts1.keys(),counts2.keys()):
+            file.write("\t".join([str(keyAlu),str(counts1[keyAlu]),str(counts2[keyAlu])])+"\n")
+            
         file.close()
         
         

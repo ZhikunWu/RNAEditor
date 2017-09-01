@@ -56,13 +56,11 @@ class RnaEdit(QtCore.QThread):
             #output=/path/to/output/rnaEditor/samplename/samplename
             self.params.output=self.outdir+self.sampleName
             if not os.path.exists(self.outdir):
-                os.makedirs(self.outdir, mode=0755)
-                os.chmod(self.outdir, 0755)
-
+                os.makedirs(self.outdir)
+            
             #create folder for html output
             if not os.path.exists(self.outdir+"/html"):
-                os.makedirs(self.outdir+"/html", mode=0755)
-                os.chmod(self.outdir, 0755)
+                os.makedirs(self.outdir+"/html")
         
         
         self.checkDependencies()
@@ -77,7 +75,7 @@ class RnaEdit(QtCore.QThread):
             Helper.error("RnaEditor Failed",self.logFile,self.textField)
         
         """ At this point the RnaEditor has succesfully finished """
-        cmd=["python",os.getcwd()+"/createDiagrams.py","-o", self.params.output]
+        cmd=["python",sys.path[0]+"/createDiagrams.py","-o", self.params.output]
         a=subprocess.call(cmd)
         self.emit(QtCore.SIGNAL("taskDone"), self.params.output+".html")
         
@@ -195,21 +193,21 @@ class RnaEdit(QtCore.QThread):
             Helper.error("Could not find Reference Genome in %s: " % self.params.refGenome,self.logFile,self.textField)
         
         # Files for BWA
-        if not os.path.isfile(self.params.refGenome+".amb"):
-            Helper.warning("Could not find %s.amb" % self.params.refGenome,self.logFile,self.textField)
-            Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
-        if not os.path.isfile(self.params.refGenome+".ann"):
-            Helper.warning("Could not find %s.ann" % self.params.refGenome,self.logFile,self.textField)
-            Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
-        if not os.path.isfile(self.params.refGenome+".bwt"):
-            Helper.warning("Could not find %s.bwt" % self.params.refGenome,self.logFile,self.textField)
-            Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
-        if not os.path.isfile(self.params.refGenome+".pac"):
-            Helper.warning("Could not find %s.pac" % self.params.refGenome,self.logFile,self.textField)
-            Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
-        if not os.path.isfile(self.params.refGenome+".sa"):
-            Helper.warning("Could not find %s.sa" % self.params.refGenome,self.logFile,self.textField)
-            Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
+        # if not os.path.isfile(self.params.refGenome+".amb"):
+        #     Helper.warning("Could not find %s.amb" % self.params.refGenome,self.logFile,self.textField)
+        #     Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
+        # if not os.path.isfile(self.params.refGenome+".ann"):
+        #     Helper.warning("Could not find %s.ann" % self.params.refGenome,self.logFile,self.textField)
+        #     Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
+        # if not os.path.isfile(self.params.refGenome+".bwt"):
+        #     Helper.warning("Could not find %s.bwt" % self.params.refGenome,self.logFile,self.textField)
+        #     Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
+        # if not os.path.isfile(self.params.refGenome+".pac"):
+        #     Helper.warning("Could not find %s.pac" % self.params.refGenome,self.logFile,self.textField)
+        #     Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
+        # if not os.path.isfile(self.params.refGenome+".sa"):
+        #     Helper.warning("Could not find %s.sa" % self.params.refGenome,self.logFile,self.textField)
+        #     Helper.error("run: 'bwa index %s' to create it" % self.params.refGenome,self.logFile,self.textField)
 
         
         #Files for GATK

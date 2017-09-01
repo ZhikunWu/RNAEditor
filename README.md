@@ -10,7 +10,6 @@ Install following tools to **/usr/local/bin/**:
 + Picard Tools: [Donwload](https://sourceforge.net/projects/picard/files/picard-tools/1.119/picard-tools-1.119.zip/download)
 	**Move all .jar files to /usr/local/bin/picard-tools/** (use version <= 1.119)
 + GATK: [Donwload](https://www.broadinstitute.org/gatk/download/auth?package=GATK)
-    **Use GATK version 3.5 with java 1.7**, the newer vesions are currently causing problems.
 + Blat:
 	+ Binarys:
 		+ [MacOSX_x86_64](http://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat)
@@ -20,7 +19,11 @@ Install following tools to **/usr/local/bin/**:
 + Bedtools: [Download]( http://bedtools.readthedocs.io/en/latest/content/installation.html)
 
 Also you need to make sure that you installed **pysam, python-qt4, matplotlib, numpy**.
-Ubuntu users simply run `sudo apt-get install python-numpy python-qt4 python-numpy python-pysam`
+If pip is available just run the following comannds to fulfill the requirements.
+`$ pip instal pysam`
+`$ sudo apt-get install python-qt4`
+`$ sudo  matplotlib` (if this fails run `sudo apt-get install libfreetype6-dev libxft-dev` first)
+`$ pip install pysam`
 
 
 #### 2.)Install
@@ -33,7 +36,7 @@ To install RNAEditor either donwload the prebuild Application bundle or clone gi
 
 + run`python RNAEditor.py`
 
-#### 4.) Run Analysis 
+#### 4.) Run Analysis
 To detect editing from you NGS data simply drop all your FASTQ-Files to the RNAEditor window set the parameters and press START
 
 

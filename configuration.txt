@@ -1,15 +1,19 @@
-# This file is used to configure the behaviour of RNAeditor
 
-# Standard input files
-refGenome = ~/rnaEditor_annotations/human/GRCH38/Homo_sapiens.GRCh38.dna.primary_assembly.fa
-gtfFile = ~/rnaEditor_annotations/human/GRCH38/Homo_sapiens.GRCh38.83.gtf
-dbSNP = ~/rnaEditor_annotations/human/GRCH38/dbSNP_ensemble2.vcf
-hapmap = ~/rnaEditor_annotations/human/GRCH38/HAPMAP.vcf
-omni = ~/rnaEditor_annotations/human/GRCH38/1000GenomeProject.vcf
-esp = ~/rnaEditor_annotations/human/GRCH38/ESP.vcf
-aluRegions = ~/rnaEditor_annotations/human/GRCH38/repeats.bed
-output = default
-sourceDir = /usr/local/bin/
+#This file is used to configure the behaviour of RNAeditor
+
+
+#please change the directory of the following files to the location in your system
+omni = /home/wzk/database/GRCH38_RNAEditor/1000GenomeProject.vcf
+dbSNP = /home/wzk/database/GRCH38_RNAEditor/GRCH38/dbSNP.vcf
+esp = /home/wzk/database/GRCH38_RNAEditor/ESP_filtered
+hapmap = /home/wzk/database/GRCH38_RNAEditor/HAPMAP.vcf
+gtfFile = /home/wzk/database/GRCH38_RNAEditor/Homo_sapiens.GRCh38.83.gtf
+refGenome = /home/wzk/database/GRCH38_RNAEditor/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+aluRegions = /home/wzk/database/GRCH38_RNAEditor/repeats.bed
+
+
+output = /home/wzk/RNAEditor/output/
+sourceDir = /home/wzk/anaconda3/envs/py35/bin/
 maxDiff = 0.04
 seedDiff = 2
 standCall = 0
@@ -21,4 +25,5 @@ eps = 50
 paired = False
 keepTemp = True
 overwrite = False
-threads = 5
+threads = 20
+
